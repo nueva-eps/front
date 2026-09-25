@@ -1,0 +1,85 @@
+<div style="max-width: 900px; margin: 30px auto; padding: 20px; font-family: Arial, sans-serif;">
+  
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0056b3; padding-bottom: 15px; margin-bottom: 20px;">
+    <h2 style="color: #0056b3; margin: 0;">Historial de Solicitudes</h2>
+    <button routerLink="/solicitudes/crear" style="background-color: #0056b3; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+      Nueva Solicitud +
+    </button>
+  </div>
+
+  @if (errorMessage) {
+    <div style="color: red; background-color: #fce8e6; padding: 10px; border-radius: 4px; margin-bottom: 15px;">{{ errorMessage }}</div>
+  }
+
+  @if (!solicitudes) {
+    <p style="color: #666; font-style: italic; text-align: center;">Cargando historial de la Nueva EPS...</p>
+  } @else if (solicitudes.length === 0) {
+    <p style="color: #777; font-style: italic;">No tienes solicitudes registradas actualmente en el sistema.</p>
+  } @else {
+    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left;">
+      <thead>
+        <tr style="background-color: #f2f2f2; border-bottom: 2px solid #ccc;">
+          <th style="padding: 12px; border: 1px solid #ddd;">No. Orden</th>
+          <th style="padding: 12px; border: 1px solid #ddd;">Medicamento</th>
+          <th style="padding: 12px; border: 1px solid #ddd;">Cantidad</th>
+          <th style="padding: 12px; border: 1px solid #ddd;">Cobertura</th>
+          <th style="padding: 12px; border: 1px solid #ddd;">Dirección Envío</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (sol of solicitudes; track sol.idSolicitud) {
+          <tr style="border-bottom: 1px solid #ddd;">
+            
+            <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">
+              {{ sol.numeroOrden ? sol.numeroOrden : 'N/A' }}
+            </td>
+            
+            <td style="padding: 12px; border: 1px solid #ddd;">
+              <strong>{{ sol.medicamento?.nombre }}</strong>
+              <span style="display: block; font-size: 12px; color: #666;">{{ sol.medicamento?.presentacion }}</span>
+            </td>
+          
+            <td style="padding: 12px; border: 1px solid #ddd;">{{ sol.cantidad }} un.</td>
+            
+            <td style="padding: 12px; border: 1px solid #ddd;">
+              <span [style.background-color]="sol.medicamento?.esPos ? '#d4edda' : '#f8d7da'" 
+                    [style.color]="sol.medicamento?.esPos ? '#155724' : '#721c24'" 
+                    style="padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; display: inline-block;">
+                {{ sol.medicamento?.esPos ? 'POS (PBS)' : 'NO POS' }}
+              </span>
+            </td>
+            
+            <td style="padding: 12px; border: 1px solid #ddd; color: #555;">
+              {{ sol.direccion ? sol.direccion : 'Reclamar de forma inmediata en farmacia' }}
+            </td>
+
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px;">
+      
+      <button (click)="paginaAnterior()" 
+              [disabled]="paginaActual === 0" 
+              [style.opacity]="paginaActual === 0 ? '0.5' : '1'"
+              [style.cursor]="paginaActual === 0 ? 'not-allowed' : 'pointer'"
+              style="padding: 8px 12px; background-color: #6c757d; color: white; border: none; border-radius: 4px; font-weight: bold;">
+        ◀ Anterior
+      </button>
+      
+      <span style="font-weight: bold; color: #333;">
+        Página {{ paginaActual + 1 }} de {{ totalPaginas }}
+      </span>
+      
+      <button (click)="paginaSiguiente()" 
+              [disabled]="paginaActual === totalPaginas - 1" 
+              [style.opacity]="paginaActual === totalPaginas - 1 ? '0.5' : '1'"
+              [style.cursor]="paginaActual === totalPaginas - 1 ? 'not-allowed' : 'pointer'"
+              style="padding: 8px 12px; background-color: #6c757d; color: white; border: none; border-radius: 4px; font-weight: bold;">
+        Siguiente ▶
+      </button>
+
+    </div>
+  }
+</div>

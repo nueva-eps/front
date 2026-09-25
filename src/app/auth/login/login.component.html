@@ -1,0 +1,48 @@
+<div class="login-container" style="max-width: 400px; margin: 50px auto; padding: 25px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-family: Arial, sans-serif;">
+  <h2 style="color: #0056b3; text-align: center; margin-bottom: 20px;">Iniciar Sesión - Nueva EPS</h2>
+  
+  @if (errorMessage) {
+    <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 4px; margin-bottom: 15px; text-align: center;">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; font-weight: bold; margin-bottom: 5px;">Correo Electrónico:</label>
+      <input type="email" formControlName="email" style="width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" placeholder="ejemplo@nuevaeps.com.co" />
+      
+      @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
+        <div style="color: #dc3545; font-size: 13px; margin-top: 5px;">
+          @if (loginForm.get('email')?.errors?.['required']) { <span>El correo electrónico es obligatorio.</span> }
+          @if (loginForm.get('email')?.errors?.['email']) { <span>Ingrese un formato de correo válido (ejemplo@dominio.com).</span> }
+        </div>
+      }
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <label style="display: block; font-weight: bold; margin-bottom: 5px;">Contraseña:</label>
+      <input type="password" formControlName="password" style="width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" placeholder="Ingrese su clave" />
+      
+      @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
+        <div style="color: #dc3545; font-size: 13px; margin-top: 5px;">
+          @if (loginForm.get('password')?.errors?.['required']) { <span>La contraseña es obligatoria.</span> }
+          @if (loginForm.get('password')?.errors?.['minlength']) { <span>La contraseña debe tener mínimo 6 caracteres.</span> }
+        </div>
+      }
+    </div>
+
+    <button type="submit" 
+            [disabled]="loginForm.invalid" 
+            [style.opacity]="loginForm.invalid ? '0.6' : '1'"
+            [style.cursor]="loginForm.invalid ? 'not-allowed' : 'pointer'"
+            style="width: 100%; padding: 12px; background-color: #0056b3; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; transition: background 0.2s;">
+      Ingresar
+    </button>
+  </form>
+
+  <div style="text-align: center; margin-top: 15px;">
+    <a href="/register" style="color: #0056b3; text-decoration: none; font-size: 14px;">¿No tienes una cuenta? Regístrate aquí</a>
+  </div>
+</div>
