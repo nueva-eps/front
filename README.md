@@ -1,3 +1,42 @@
+# Interfaz de Usuario - Frontend
+
+Este repositorio contiene la aplicación **Frontend** para interactuar de forma visual con el ecosistema de APIs de la aplicación.
+
+---
+
+## 🛠️ Prerrequisitos Local
+
+Antes de encender la interfaz, asegúrate de cumplir las siguientes condiciones:
+1. Tener el servidor de base de datos **PostgreSQL** corriendo con la base de datos `nuevaeps`.
+2. Tener las APIs **`api-auth`** y **`api-solicitudes`** encendidas y escuchando en sus respectivos puertos locales.
+
+---
+
+## 🚀 Instalación y Despliegue
+
+### 1. Clonar e Instalar Dependencias
+Abre una terminal en la raíz de este proyecto y descarga los módulos necesarios del sistema:
+
+```bash
+npm install
+```
+
+### 2. Configurar Variables de Entorno (Opcional)
+Si tus servicios locales corren en puertos personalizados, asegúrate de crear un archivo `.env` en la raíz de este proyecto apuntando a las APIs:
+```env
+API_AUTH_URL=http://localhost:8081
+API_SOLICITUDES_URL=http://localhost:8082
+```
+
+### 3. Levantar Servidor de Desarrollo
+Para arrancar el proyecto en tu entorno local, ejecuta:
+
+```bash
+npm run dev
+```
+
+Abre tu navegador e ingresa a la dirección provista por la consola (comúnmente `http://localhost:3000` o `http://localhost:5173`).
+
 # Front
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.0.
