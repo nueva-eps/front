@@ -25,11 +25,19 @@ export class RegisterComponent {
     segundoApellido: [''], // Opcional
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    idTipoDocumento: [1, [Validators.required]] 
+    idTipoDocumento: ['', [Validators.required]] 
   });
 
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.registerForm.get(fieldName);
+    return !!(field && field.invalid && (field.touched || field.dirty));
+  }
+
   onRegister(): void {
-    if (this.registerForm.invalid) return;
+    if (this.registerForm.invalid) {    
+      this.registerForm.markAllAsTouched();
+      return;
+    }
 
     this.authService.register(this.registerForm.value).subscribe({
       next: (response) => {

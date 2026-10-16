@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -19,10 +19,10 @@ export class CrearSolicitudComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  medicamentos: any[] = [];
-  successMessage: string = '';
-  errorMessage: string = '';
-  esNoPos: boolean = false; 
+  medicamentos = signal<any[]>([]);
+  successMessage = signal<string>('');
+  errorMessage = signal<string>('');
+  esNoPos = signal<boolean>(false);  
 
   solicitudForm: FormGroup = this.fb.group({
     idUsuario: [''],
@@ -36,7 +36,7 @@ export class CrearSolicitudComponent implements OnInit {
 
   ngOnInit(): void {
     this.medicamentoService.listarMedicamentos().subscribe({
-      next: (data) => this.medicamentos = data,
+      next: (data) => this.medicamentos.set(data),
       error: (err) => console.error('Error al traer catálogo de medicamentos', err)
     });
 
@@ -48,13 +48,13 @@ export class CrearSolicitudComponent implements OnInit {
   private evaluarTipoMedicamento(id: any): void {
     const idNumerico = Number(id); 
     
-    const medSeleccionado = this.medicamentos.find(m => m.idMedicamento === idNumerico);
+    const medSeleccionado = this.medicamentos().find(m => m.idMedicamento === idNumerico);
     
     if (medSeleccionado) {
-      this.esNoPos = !medSeleccionado.esPos; 
+      this.esNoPos.set(!medSeleccionado.esPos); 
       this.actualizarValidadoresCondicionales();
     } else {
-      this.esNoPos = false;
+      this.esNoPos.set(false);
     }
   }
 
@@ -64,7 +64,7 @@ export class CrearSolicitudComponent implements OnInit {
     camposExtras.forEach(campoName => {
       const control = this.solicitudForm.get(campoName);
       if (control) {
-        if (this.esNoPos) {
+        if (this.esNoPos()) {
           control.setValidators(campoName === 'correoElectronico' 
             ? [Validators.required, Validators.email] 
             : [Validators.required]);
@@ -83,7 +83,7 @@ export class CrearSolicitudComponent implements OnInit {
     const idLogueado = this.authService.getUsuarioId();
 
     if (!idLogueado) {
-      this.errorMessage = 'Sesión inválida o expirada. Por favor ingresa de nuevo.';
+      this.errorMessage.set('Sesión inválida o expirada. Por favor ingresa de nuevo.');
       return;
     }
 
@@ -91,7 +91,7 @@ export class CrearSolicitudComponent implements OnInit {
 
     this.solicitudService.crearSolicitud(this.solicitudForm.value).subscribe({
       next: () => {
-        this.successMessage = '¡Solicitud registrada con éxito en la Nueva EPS!';
+        this.successMessage.set('¡Solicitud registrada con éxito en la Nueva EPS!');
         setTimeout(() => this.router.navigate(['/solicitudes/consultar']), 1500);
       },
       error: (err) => {

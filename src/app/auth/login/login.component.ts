@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
@@ -15,7 +15,7 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  errorMessage: string = '';
+  errorMessage = signal<string>('');
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -31,7 +31,7 @@ export class LoginComponent {
         this.router.navigate(['/solicitudes/consultar']);
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Credenciales incorrectas';
+        this.errorMessage.set(err.error?.message || 'Credenciales incorrectas');
       }
     });
   }

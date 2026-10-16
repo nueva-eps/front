@@ -20,22 +20,33 @@
     <div style="margin-bottom: 15px;">
       <label style="display: block; font-weight: bold; margin-bottom: 5px;">Tipo de Documento:</label>
       <select formControlName="idTipoDocumento" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        <option value="" disabled selected>Seleccione un tipo de documento</option>
         <option [value]="1">Cédula de Ciudadanía (CC)</option>
         <option [value]="2">Tarjeta de Identidad (TI)</option>
         <option [value]="3">Cédula de Extranjería (CE)</option>
-        <option [value]="4">Pasaporte (PA)</option>
       </select>
+
+      @if (isFieldInvalid('idTipoDocumento')) {
+        <small style="color: red; display: block; margin-top: 5px;">Debe seleccionar un tipo de documento.</small>
+      }
     </div>
 
     <div style="margin-bottom: 15px;">
       <label style="display: block; font-weight: bold; margin-bottom: 5px;">Número de Documento:</label>
       <input type="text" formControlName="numeroDocumento" style="width: 96%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" placeholder="Ej: 1014987654" />
+      @if (isFieldInvalid('numeroDocumento')) {
+        <small style="color: red; display: block; margin-top: 5px;">El número de documento es obligatorio.</small>
+      }
     </div>
 
     <div style="display: flex; gap: 10px; margin-bottom: 15px;">
       <div style="flex: 1;">
         <label style="display: block; font-weight: bold; margin-bottom: 5px;">Primer Nombre:</label>
         <input type="text" formControlName="primerNombre" style="width: 92%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+
+        @if (isFieldInvalid('primerNombre')) {
+          <small style="color: red; display: block; margin-top: 5px;">El primer nombre es obligatorio.</small>
+        }
       </div>
       <div style="flex: 1;">
         <label style="display: block; font-weight: bold; margin-bottom: 5px;">Segundo Nombre:</label>
@@ -47,6 +58,9 @@
       <div style="flex: 1;">
         <label style="display: block; font-weight: bold; margin-bottom: 5px;">Primer Apellido:</label>
         <input type="text" formControlName="primerApellido" style="width: 92%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+        @if (isFieldInvalid('primerApellido')) {
+          <small style="color: red; display: block; margin-top: 5px;">El primer apellido es obligatorio.</small>
+        }
       </div>
       <div style="flex: 1;">
         <label style="display: block; font-weight: bold; margin-bottom: 5px;">Segundo Apellido:</label>
@@ -57,14 +71,30 @@
     <div style="margin-bottom: 15px;">
       <label style="display: block; font-weight: bold; margin-bottom: 5px;">Correo Electrónico:</label>
       <input type="email" formControlName="email" style="width: 96%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" placeholder="ejemplo@nuevaeps.com.co" />
+      @if (isFieldInvalid('email')) {
+        <small style="color: red; display: block; margin-top: 5px;">
+          @if (registerForm.get('email')?.hasError('required')) { El correo es obligatorio. }
+          @if (registerForm.get('email')?.hasError('email')) { El formato de correo no es válido. }
+        </small>
+      }
     </div>
 
     <div style="margin-bottom: 20px;">
       <label style="display: block; font-weight: bold; margin-bottom: 5px;">Contraseña:</label>
       <input type="password" formControlName="password" style="width: 96%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" placeholder="Mínimo 6 caracteres" />
+      @if (isFieldInvalid('password')) {
+        <small style="color: red; display: block; margin-top: 5px;">
+          @if (registerForm.get('password')?.hasError('required')) { La contraseña es obligatoria. }
+          @if (registerForm.get('password')?.hasError('minlength')) { Debe tener al menos 6 caracteres. }
+        </small>
+      }
     </div>
 
-    <button type="submit" [disabled]="registerForm.invalid" style="width: 100%; padding: 12px; background-color: #0056b3; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+    <button type="submit" 
+            [disabled]="registerForm.invalid" 
+            [style.opacity]="registerForm.invalid ? '0.6' : '1'"
+            [style.cursor]="registerForm.invalid ? 'not-allowed' : 'pointer'"
+            style="width: 100%; padding: 12px; background-color: #0056b3; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; transition: background 0.2s;">
       Registrar Usuario
     </button>
   </form>
